@@ -1,4 +1,4 @@
-package com.example.tobythread;
+package me.ggulmool.ch04;
 
 import lombok.extern.slf4j.Slf4j;
 

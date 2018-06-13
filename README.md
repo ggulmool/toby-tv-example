@@ -37,5 +37,14 @@
 - 스프링 비동기 서블릿 기술 Emitter
     - 데이터를 여러번에 나눠서 보낼때 사용
 
-
+#### 스프링 리액티브 프로그래밍 (5) [비동기 RestTemplate과 비동기 MVC/Servlet](https://www.youtube.com/watch?v=ExUfZkh7Puk)
+- ThreadPool Hell
+    - 쓰레드 수를 많이 잡는다고 무조건 좋은건 아니다.
+    - 쓰레드 수가 많으면 컨텍스트 스위칭이 빈번하게 발생
+    - 컨텍스트 스위칭도 CPU의 자원을 많이 점유한다. 외부의 API 호출은 블로킹 상태가 되는데 그럴때마다 컨텍스트 스위칭한다.
     
+- CyclicBarrier
+    - 설정한 barrier갯수 만큼 await() 블로킹 시키고 barrier값에 만족하면 await() 이후의 로직을 동시에 수행 시킨다.
+
+- RestTemplate
+    - getForObject() 블로킹 메소드

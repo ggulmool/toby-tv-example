@@ -1,4 +1,4 @@
-package com.example.tobythread;
+package me.ggulmool.ch04;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
-import java.io.IOException;
 import java.util.Queue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -96,12 +95,12 @@ public class TobyApplication {
             return () -> {
                 // 스프링이 별도의 쓰레드에서 실행해주고 요청 처리한 서블릿 쓰레드는 바로 리턴해준다.
                 // 그러면 서블릿쓰레드는 대기할 필요 없다.
-                //[nio-8080-exec-1] com.example.tobythread.TobyApplication   : callable
-                //[     MvcAsync98] com.example.tobythread.TobyApplication   : callable async
-                //[nio-8080-exec-1] com.example.tobythread.TobyApplication   : callable
-                //[     MvcAsync99] com.example.tobythread.TobyApplication   : callable async
-                //[nio-8080-exec-1] com.example.tobythread.TobyApplication   : callable
-                //[    MvcAsync100] com.example.tobythread.TobyApplication   : callable async
+                //[nio-8080-exec-1] me.ggulmool.ch04.TobyApplication   : callable
+                //[     MvcAsync98] me.ggulmool.ch04.TobyApplication   : callable async
+                //[nio-8080-exec-1] me.ggulmool.ch04.TobyApplication   : callable
+                //[     MvcAsync99] me.ggulmool.ch04.TobyApplication   : callable async
+                //[nio-8080-exec-1] me.ggulmool.ch04.TobyApplication   : callable
+                //[    MvcAsync100] me.ggulmool.ch04.TobyApplication   : callable async
                 log.info("callable async");
                 Thread.sleep(2000);
                 return "hello";
