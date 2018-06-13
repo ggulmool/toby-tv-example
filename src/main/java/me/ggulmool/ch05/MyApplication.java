@@ -1,8 +1,10 @@
 package me.ggulmool.ch05;
 
+import io.netty.channel.nio.NioEventLoopGroup;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.Netty4ClientHttpRequestFactory;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,7 +17,8 @@ public class MyApplication {
     @RestController
     public static class MyController {
         //RestTemplate rt = new RestTemplate();
-        AsyncRestTemplate rt = new AsyncRestTemplate();
+        //AsyncRestTemplate rt = new AsyncRestTemplate();
+        AsyncRestTemplate rt = new AsyncRestTemplate(new Netty4ClientHttpRequestFactory(new NioEventLoopGroup(1)));
 
 //        @GetMapping("/rest")
 //        public String rest(int idx) {

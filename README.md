@@ -54,3 +54,8 @@
     - 결과값이 오면 처리하는 callback은 SpringMVC 알아서 callback 등록하기 때문에 callback만들 필요 없다.
     - 하지만 AsyncRestTemplate는 비동기로 작업을 처리하기 위해서 background에 worker 쓰레드를 만들어서 실행한다.
     - 새로운 쓰레드를 새로 만들어서 자원을 추가로 사용하기 때문에 비효율
+
+- AsyncRestTemplate 논블로킹 방식
+    - NettyEventGroup 추가
+    - 쓰레드를 추가로 만들지 않고 하나의 쓰레드로 다 처리
+   
