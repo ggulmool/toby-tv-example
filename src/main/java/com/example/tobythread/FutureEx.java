@@ -37,7 +37,9 @@ public class FutureEx {
         }
     }
 
-    //
+    // 이 방식은 비동기 작업을 수행하는 코드와 쓰레드풀 생성과 종료하는 코드가 한군데 혼재해 있다.
+    // 성격이 다른 기술적인 코드와 비지니스 적인 코드가 한군데 혼재해 있다.
+    // 깔끔하게 분리하고 추상화 해준 스프링을 사용하여 개선.
     public static void main(String[] args) throws InterruptedException, ExecutionException {
         ExecutorService es = Executors.newCachedThreadPool();
 
