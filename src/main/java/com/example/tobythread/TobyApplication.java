@@ -7,10 +7,13 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
+import java.io.IOException;
 import java.util.Queue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Executors;
 
 /*
 ex) 블로킹 IO작업 때문에 쓰레드 풀이 꽉차면 그 이후 요청은 큐에서 요청 대기하기 때문에 매우 비효율
@@ -43,6 +46,22 @@ public class TobyApplication {
     @RestController
     public static class MyContoller {
         Queue<DeferredResult<String>> results = new ConcurrentLinkedQueue<>();
+
+        // 데이터를 여러번에 나눠서 보낼때 사용
+        @GetMapping("/emitter")
+        public ResponseBodyEmitter emitter() {
+            ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+
+            Executors.newSingleThreadExecutor().submit(() -> {
+                try {
+                    for (int i = 0; i <= 50; i++) {
+                        emitter.send("<p>Stream " + i + "</p>");
+                        Thread.sleep(500);
+                    }
+                } catch (Exception e) {}
+            });
+            return emitter;
+        }
 
         @GetMapping("/dr")
         public DeferredResult<String> deferredResult() {
