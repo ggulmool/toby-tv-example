@@ -6,8 +6,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.async.DeferredResult;
 
+import java.util.Queue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /*
 ex) 블로킹 IO작업 때문에 쓰레드 풀이 꽉차면 그 이후 요청은 큐에서 요청 대기하기 때문에 매우 비효율
@@ -39,6 +42,35 @@ public class TobyApplication {
 
     @RestController
     public static class MyContoller {
+        Queue<DeferredResult<String>> results = new ConcurrentLinkedQueue<>();
+
+        @GetMapping("/dr")
+        public DeferredResult<String> deferredResult() {
+            log.info("dr");
+            // DeferedResult는 setResult, setError 호출되기 전까지 http요청에 대한 응답을 대기하고 있다. 서블릿 쓰레드는 반납
+            // 최대 장점은 Worker 쓰레드를 따로 만들지 않기 때문에 서블릿 자원을 최소한으로 활용하면서 동시에 수많은 요청을 처리할 수 있다.
+            // 쓰레드 하나로 처리.
+            // 이벤트성 구조인 경우에 유용. 비동기 io를 이용한 외부 io를 호출할 때도 사용
+            DeferredResult<String> dr = new DeferredResult<>(600000L);
+            results.add(dr);
+            return dr;
+        }
+
+        @GetMapping("/dr/count")
+        public String drcount() {
+            return String.valueOf(results.size());
+        }
+
+        @GetMapping("/dr/event")
+        public String drevent(String msg) {
+            for (DeferredResult<String> dr : results) {
+                // 이벤트 결과를 쓰는 순간 응답한다.
+                dr.setResult("Hello " + msg);
+                results.remove(dr);
+            }
+            return "OK";
+        }
+
         @GetMapping("/callable")
         public Callable<String> callable() throws InterruptedException {
             log.info("callable");
