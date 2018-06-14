@@ -11,9 +11,15 @@ public class RemoteService {
     @RestController
     public static class MyController {
         @GetMapping("/service")
-        public String rest(String req) throws InterruptedException {
+        public String service(String req) throws InterruptedException {
             Thread.sleep(2000);
             return req + "/service";
+        }
+
+        @GetMapping("/service2")
+        public String service2(String req) throws InterruptedException {
+            Thread.sleep(2000);
+            return req + "/service2";
         }
     }
 

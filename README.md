@@ -58,4 +58,36 @@
 - AsyncRestTemplate 논블로킹 방식
     - NettyEventGroup 추가
     - 쓰레드를 추가로 만들지 않고 하나의 쓰레드로 다 처리
-   
+
+- ListenableFuture
+    - Controller에서 Listenable리턴시 Spring에 의해 미리 정의된 callback함수 실행
+    - api 호출 후 리턴 받은 값을 가공해서 비동기로 리턴하려면 DeferedResult 이용.
+        - ListenableFuture에 addCallback 메소드에 호출될 콜백 메소드 지정해서 리턴받은 값 가공한다.
+        - DeferedResult에 setResult하는 순간 가공처리한 값을 리턴한다.
+    - Controller메소드는 즉시 리턴하고 백그라운드에서 논블로킹 방식으로 비동기 처리하기 때문에 많은 외부 서비스를 처리하는 것들이 가능하다.
+    - 그러나 코드가 콜백 헬 코드
+```
+@GetMapping("/rest")
+public DeferredResult<String> rest(int idx) {
+    DeferredResult<String> dr = new DeferredResult<>();
+
+    ListenableFuture<ResponseEntity<String>> f1 = rt.getForEntity("http://localhost:8081/service?req={req}", String.class, "hello" + idx);
+    f1.addCallback(s -> {
+        ListenableFuture<ResponseEntity<String>> f2 = rt.getForEntity("http://localhost:8081/service2?req={req}", String.class, s.getBody());
+        f2.addCallback(s2 -> {
+            ListenableFuture<String> f3 = myService.work(s2.getBody());
+            f3.addCallback(s3 -> {
+                dr.setResult(s3);
+            }, e -> {
+                dr.setErrorResult(e.getMessage());
+            });
+        }, e -> {
+            dr.setErrorResult(e.getMessage());
+        });
+    }, e -> {
+        dr.setErrorResult(e.getMessage());
+    });
+    return dr;
+}  
+    
+```
