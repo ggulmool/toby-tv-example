@@ -25,6 +25,8 @@ public class MyApplication {
 
     @RestController
     public static class MyController {
+        private static final String URL1 = "http://localhost:8081/service?req={req}";
+        private static final String URL2 = "http://localhost:8081/service2?req={req}";
         //RestTemplate rt = new RestTemplate();
         //AsyncRestTemplate rt = new AsyncRestTemplate();
         AsyncRestTemplate rt = new AsyncRestTemplate(new Netty4ClientHttpRequestFactory(new NioEventLoopGroup(1)));
@@ -47,9 +49,9 @@ public class MyApplication {
         public DeferredResult<String> rest(int idx) {
             DeferredResult<String> dr = new DeferredResult<>();
 
-            ListenableFuture<ResponseEntity<String>> f1 = rt.getForEntity("http://localhost:8081/service?req={req}", String.class, "hello" + idx);
+            ListenableFuture<ResponseEntity<String>> f1 = rt.getForEntity(URL1, String.class, "hello" + idx);
             f1.addCallback(s -> {
-                ListenableFuture<ResponseEntity<String>> f2 = rt.getForEntity("http://localhost:8081/service2?req={req}", String.class, s.getBody());
+                ListenableFuture<ResponseEntity<String>> f2 = rt.getForEntity(URL2, String.class, s.getBody());
                 f2.addCallback(s2 -> {
                     ListenableFuture<String> f3 = myService.work(s2.getBody());
                     f3.addCallback(s3 -> {

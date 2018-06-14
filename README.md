@@ -65,7 +65,7 @@
         - ListenableFuture에 addCallback 메소드에 호출될 콜백 메소드 지정해서 리턴받은 값 가공한다.
         - DeferedResult에 setResult하는 순간 가공처리한 값을 리턴한다.
     - Controller메소드는 즉시 리턴하고 백그라운드에서 논블로킹 방식으로 비동기 처리하기 때문에 많은 외부 서비스를 처리하는 것들이 가능하다.
-    - 그러나 코드가 콜백 헬 코드
+    - 그러나 코드가 콜백 지옥
 ```
 @GetMapping("/rest")
 public DeferredResult<String> rest(int idx) {
@@ -91,3 +91,14 @@ public DeferredResult<String> rest(int idx) {
 }  
     
 ```
+
+- JDBC 호출방식은 스펙에 정의되 있는 것 자체가 다 블로킹 방식
+    - 그렇기 때문에 쓰레드의 추가 없이 논블로킹 IO를 이용해서 DB와 통신하는 비동기 방식으로 작성하는 것은 불가능
+    - DB나 스토리지와의 액세스 자체를 비동기 방식의 논블로킹 드라이버를 제공해주는 것들이 있다.
+        - MONGODB
+        - Spring DATA 모듈을 보면 NoSQL을 호출하는 경우에 비동기 논블로킹 방식으로 DB를 액세스하는 API제공
+        - 하지만 JPA와 JDBC를 사용하는 일반 DB를 호출하는 경우는 지원X
+    - 추후 비동기 JDBC 스펙이 나올거라 예상
+
+- 콜백 헬 해결
+    - 자바8에 추가된 CompletableFuture 사용
