@@ -10,14 +10,21 @@
     - 요즘 복잡하고 수많은 서버들과 분산되 있는 클라이언트들 사이에서 데이터가 오고가는 모던한 시스템에서는 옵저버 패턴은 한계가 있다.
     - 확장된 옵저버 패턴 -> 리액티브 프로그래밍의 한축
 - Reactive-Streams
-    - Publisher
-    - Subscriber
-    - Subscription
+    - Publisher : 데이터 스트림을 계속적으로 만들어내는 provider역할
+    - Subscriber : Publisher에서 보낸 데이터를 받아서 사용
+        - onSubscribe onNext* (onError | onComplete)
+    - Subscription : Publisher와 Subsciber 사이의 구독이 한번 일어나는 액션을 담당
     - Processor
     - 위 스펙을 직접 코딩하기 어렵기 때문에 관련 Reactive 라이브러리가 나옴.
 - 백프레셔
     - Publisher와 Subscriber 사이의 속도 조절
     - Subscriber에서 데이터를 어떻게 받겠다고 의도를 정의
+
+#### 스프링 리액티브 프로그래밍 (2) [Reactive Streams - Operators](https://www.youtube.com/watch?v=DChIxy9g19o)
+- Operator
+    - Publisher -> [Data1] -> Op1 -> [Data2] -> Op2 -> [Data3] -> Subscriber
+     
+      
       
 #### 스프링 리액티브 프로그래밍 (4) [자바와 스프링의 비동기 기술](https://www.youtube.com/watch?v=aSTuQiPB4Ns&t=4916s)
 - 순수 자바 쓰레드를 활용하여 비동기 처리를 하기 위한 Future,FutureTask를 활용한 콜백방식
